@@ -4,6 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class ContactForm extends StatefulWidget {
+  final Contact? editedContact;
+  final int? editedContactIndex;
+
+  ContactForm({Key? key, this.editedContact, this.editedContactIndex})
+      : super(key: key);
+
   @override
   _ContactFormState createState() => _ContactFormState();
 }
@@ -12,9 +18,10 @@ class _ContactFormState extends State<ContactForm> {
   final _formKey = GlobalKey<FormState>();
 
   String? _name;
-
   String? _email = '';
   String? _phoneNumber = '';
+
+  bool get isEditMode => widget.editedContact != null;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +31,7 @@ class _ContactFormState extends State<ContactForm> {
         children: <Widget>[
           const SizedBox(height: 10),
           TextFormField(
+            initialValue: widget.editedContact?.name,
             onSaved: (newValue) => _name = newValue,
             validator: _validateName,
             decoration: InputDecoration(
@@ -33,6 +41,7 @@ class _ContactFormState extends State<ContactForm> {
           ),
           SizedBox(height: 10),
           TextFormField(
+            initialValue: widget.editedContact?.email,
             onSaved: (newValue) => _email = newValue,
             validator: _validateEmail,
             decoration: InputDecoration(
@@ -42,6 +51,7 @@ class _ContactFormState extends State<ContactForm> {
           ),
           SizedBox(height: 10),
           TextFormField(
+            initialValue: widget.editedContact?.phoneNumber,
             onSaved: (newValue) => _phoneNumber = newValue,
             validator: _validatePhoneNumber,
             decoration: InputDecoration(
@@ -105,7 +115,12 @@ class _ContactFormState extends State<ContactForm> {
           phoneNumber: _phoneNumber!,
         );
         ContactsModel contactsModel = ScopedModel.of<ContactsModel>(context);
-        contactsModel.addContact(newContact);
+        if (this.isEditMode) {
+          contactsModel.updateContact(newContact, widget.editedContactIndex!);
+        } else {
+          contactsModel.addContact(newContact);
+        }
+
         print('Saved: ' + _name! + ' ' + _email! + ' ' + _phoneNumber!);
         Navigator.of(context).pop();
       }

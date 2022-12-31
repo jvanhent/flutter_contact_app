@@ -19,6 +19,11 @@ class ContactsModel extends Model {
     print(_contacts.length);
   }
 
+  void updateContact(Contact contact, int index) {
+    _contacts[index] = contact;
+    notifyListeners();
+  }
+
   void changeFavoriteStatus(int index) {
     Contact contact = _contacts[index];
     contact.isFavorite = !contact.isFavorite;
