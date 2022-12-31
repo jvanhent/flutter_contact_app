@@ -80,26 +80,23 @@ class _ContactFormState extends State<ContactForm> {
   }
 
   String? _validateName(String? name) {
-    if (name == null) return 'Enter a name';
-    if (name.isEmpty) return 'Enter a name';
+    if (name?.isEmpty ?? false) return 'Enter a name';
 
     return null;
   }
 
   String? _validateEmail(String? email) {
-    if (email == null) return 'Enter a email';
-    if (email.isEmpty) return 'Enter a email';
+    if (email?.isEmpty ?? false) return 'Enter a email';
     var emailRegex = RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
-    if (!emailRegex.hasMatch(email)) return 'Invalid email';
+    if (!emailRegex.hasMatch(email!)) return 'Invalid email';
 
     return null;
   }
 
   String? _validatePhoneNumber(String? nr) {
-    if (nr == null) return 'Enter a PhoneNumber';
-    if (nr.isEmpty) return 'Enter a PhoneNumber';
-    var phoneRegex = RegExp(r"^\+(?:[0-9] ?){6,14}[0-9]$");
-    if (!phoneRegex.hasMatch(nr)) return 'Invalid PhoneNumber';
+    if (nr?.isEmpty ?? false) return 'Enter a PhoneNumber';
+    var phoneRegex = RegExp(r"[0-9]{6,14}");
+    if (!phoneRegex.hasMatch(nr!)) return 'Invalid PhoneNumber';
 
     return null;
   }
@@ -113,6 +110,7 @@ class _ContactFormState extends State<ContactForm> {
           name: _name!,
           email: _email!,
           phoneNumber: _phoneNumber!,
+          isFavorite: widget.editedContact?.isFavorite ?? false,
         );
         ContactsModel contactsModel = ScopedModel.of<ContactsModel>(context);
         if (this.isEditMode) {
