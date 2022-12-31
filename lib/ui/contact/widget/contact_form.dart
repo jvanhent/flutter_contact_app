@@ -107,6 +107,7 @@ class _ContactFormState extends State<ContactForm> {
         ContactsModel contactsModel = ScopedModel.of<ContactsModel>(context);
         contactsModel.addContact(newContact);
         print('Saved: ' + _name! + ' ' + _email! + ' ' + _phoneNumber!);
+        Navigator.of(context).pop();
       }
     }
   }

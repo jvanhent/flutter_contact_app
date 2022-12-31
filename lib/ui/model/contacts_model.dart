@@ -3,7 +3,7 @@ import 'package:faker/faker.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class ContactsModel extends Model {
-  List<Contact> _contacts = List.generate(50, (index) {
+  List<Contact> _contacts = List.generate(5, (index) {
     return Contact(
       name: faker.person.firstName(),
       email: faker.internet.freeEmail(),
