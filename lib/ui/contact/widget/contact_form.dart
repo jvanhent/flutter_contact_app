@@ -83,9 +83,12 @@ class _ContactFormState extends State<ContactForm> {
 
   Widget _buildContactPicture() {
     final double radius = MediaQuery.of(context).size.width / 4;
-    return CircleAvatar(
-      radius: radius,
-      child: _buildAvatarContent(radius),
+    return Hero(
+      tag: widget.editedContact.hashCode,
+      child: CircleAvatar(
+        radius: radius,
+        child: _buildAvatarContent(radius),
+      ),
     );
   }
 
@@ -94,7 +97,10 @@ class _ContactFormState extends State<ContactForm> {
       return Text(widget.editedContact!.name[0],
           style: TextStyle(fontSize: radius));
     } else {
-      return Icon(Icons.person, size: radius,);
+      return Icon(
+        Icons.person,
+        size: radius,
+      );
     }
   }
 

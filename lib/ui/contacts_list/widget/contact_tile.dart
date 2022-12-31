@@ -49,9 +49,7 @@ class ContactTile extends StatelessWidget {
     return ListTile(
       title: Text(contact.name),
       subtitle: Text(contact.email),
-      leading: CircleAvatar(
-        child: Text(contact.name[0].toUpperCase()),
-      ),
+      leading: _buildCircleAvatar(contact),
       trailing: IconButton(
         icon: Icon(contact.isFavorite ? Icons.star : Icons.star_border),
         color: contact.isFavorite ? Colors.amber : Colors.grey,
@@ -65,6 +63,15 @@ class ContactTile extends StatelessWidget {
               editedContact: contact, editedContactIndex: this.contactIndex),
         ));
       },
+    );
+  }
+
+  Widget _buildCircleAvatar(Contact contact) {
+    return Hero(
+      tag: contact.hashCode,
+      child: CircleAvatar(
+        child: Text(contact.name[0].toUpperCase()),
+      ),
     );
   }
 }
