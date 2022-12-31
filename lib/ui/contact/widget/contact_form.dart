@@ -30,6 +30,8 @@ class _ContactFormState extends State<ContactForm> {
       child: ListView(
         children: <Widget>[
           const SizedBox(height: 10),
+          _buildContactPicture(),
+          const SizedBox(height: 10),
           TextFormField(
             initialValue: widget.editedContact?.name,
             onSaved: (newValue) => _name = newValue,
@@ -77,6 +79,23 @@ class _ContactFormState extends State<ContactForm> {
         ],
       ),
     );
+  }
+
+  Widget _buildContactPicture() {
+    final double radius = MediaQuery.of(context).size.width / 4;
+    return CircleAvatar(
+      radius: radius,
+      child: _buildAvatarContent(radius),
+    );
+  }
+
+  Widget _buildAvatarContent(double radius) {
+    if (this.isEditMode) {
+      return Text(widget.editedContact!.name[0],
+          style: TextStyle(fontSize: radius));
+    } else {
+      return Icon(Icons.person, size: radius,);
+    }
   }
 
   String? _validateName(String? name) {
