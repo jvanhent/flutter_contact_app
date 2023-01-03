@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:contacts_app/data/contact.dart';
 import 'package:contacts_app/ui/model/contacts_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class ContactForm extends StatefulWidget {
@@ -20,8 +24,16 @@ class _ContactFormState extends State<ContactForm> {
   String? _name;
   String? _email = '';
   String? _phoneNumber = '';
+  String? _imagePath;
 
   bool get isEditMode => widget.editedContact != null;
+  bool get hasSelectedCustomImage => _imagePath != null;
+
+  @override
+  initState() {
+    super.initState();
+    this._imagePath = widget.editedContact?.imagePath;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,23 +97,49 @@ class _ContactFormState extends State<ContactForm> {
     final double radius = MediaQuery.of(context).size.width / 4;
     return Hero(
       tag: widget.editedContact.hashCode,
-      child: CircleAvatar(
-        radius: radius,
-        child: _buildAvatarContent(radius),
+      child: GestureDetector(
+        onTap: _onContactPictureTapped,
+        child: CircleAvatar(
+          radius: radius,
+          child: _buildAvatarContent(radius),
+        ),
       ),
     );
   }
 
+  void _onContactPictureTapped() async {
+    var imageFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (imageFile != null)
+      setState(() {
+        this._imagePath = imageFile.path;
+      });
+  }
+
   Widget _buildAvatarContent(double radius) {
-    if (this.isEditMode) {
-      return Text(widget.editedContact!.name[0],
-          style: TextStyle(fontSize: radius));
+    if (this.isEditMode || this.hasSelectedCustomImage) {
+      if (this._imagePath == null)
+        return Text(widget.editedContact!.name[0],
+            style: TextStyle(fontSize: radius));
+      return _buildOvalFromCustomImage();
     } else {
       return Icon(
         Icons.person,
         size: radius,
       );
     }
+  }
+
+  ClipOval _buildOvalFromCustomImage() {
+    var img = kIsWeb
+        ? Image.network(this._imagePath!, fit: BoxFit.cover)
+        : Image.file(File(this._imagePath!), fit: BoxFit.cover);
+
+    return ClipOval(
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: img,
+      ),
+    );
   }
 
   String? _validateName(String? name) {
@@ -136,6 +174,7 @@ class _ContactFormState extends State<ContactForm> {
           email: _email!,
           phoneNumber: _phoneNumber!,
           isFavorite: widget.editedContact?.isFavorite ?? false,
+          imagePath: _imagePath,
         );
         ContactsModel contactsModel = ScopedModel.of<ContactsModel>(context);
         if (this.isEditMode) {

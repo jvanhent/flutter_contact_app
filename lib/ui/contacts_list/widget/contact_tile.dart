@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:contacts_app/data/contact.dart';
 import 'package:contacts_app/ui/contact/contact_edit_page.dart';
 import 'package:contacts_app/ui/model/contacts_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -69,8 +72,28 @@ class ContactTile extends StatelessWidget {
   Widget _buildCircleAvatar(Contact contact) {
     return Hero(
       tag: contact.hashCode,
-      child: CircleAvatar(
-        child: Text(contact.name[0].toUpperCase()),
+      child: _buildAvatar(contact),
+    );
+  }
+
+  CircleAvatar _buildAvatar(Contact contact) {
+    return CircleAvatar(
+      child: _buildAvatarContent(contact),
+    );
+  }
+
+  Widget _buildAvatarContent(Contact contact) {
+    if (contact.imagePath == null) {
+      return Text(contact.name[0].toUpperCase());
+    }
+    var img = kIsWeb
+        ? Image.network(contact.imagePath!, fit: BoxFit.cover)
+        : Image.file(File(contact.imagePath!), fit: BoxFit.cover);
+
+    return ClipOval(
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: img,
       ),
     );
   }
