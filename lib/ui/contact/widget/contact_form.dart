@@ -9,10 +9,8 @@ import 'package:scoped_model/scoped_model.dart';
 
 class ContactForm extends StatefulWidget {
   final Contact? editedContact;
-  final int? editedContactIndex;
 
-  ContactForm({Key? key, this.editedContact, this.editedContactIndex})
-      : super(key: key);
+  ContactForm({Key? key, this.editedContact}) : super(key: key);
 
   @override
   _ContactFormState createState() => _ContactFormState();
@@ -178,7 +176,8 @@ class _ContactFormState extends State<ContactForm> {
         );
         ContactsModel contactsModel = ScopedModel.of<ContactsModel>(context);
         if (this.isEditMode) {
-          contactsModel.updateContact(newContact, widget.editedContactIndex!);
+          newContact.id = widget.editedContact?.id;
+          contactsModel.updateContact(newContact);
         } else {
           contactsModel.addContact(newContact);
         }

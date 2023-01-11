@@ -31,7 +31,7 @@ class ContactTile extends StatelessWidget {
           // A SlidableAction can have an icon and/or a label.
           SlidableAction(
             onPressed: (_) {
-              model.deleteContact(contactIndex);
+              model.deleteContact(contact);
             },
             backgroundColor: Colors.red,
             foregroundColor: Colors.white,
@@ -57,13 +57,14 @@ class ContactTile extends StatelessWidget {
         icon: Icon(contact.isFavorite ? Icons.star : Icons.star_border),
         color: contact.isFavorite ? Colors.amber : Colors.grey,
         onPressed: () {
-          model.changeFavoriteStatus(contactIndex);
+          model.changeFavoriteStatus(contact);
         },
       ),
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
           builder: (_) => ContactEditPage(
-              editedContact: contact, editedContactIndex: this.contactIndex),
+            editedContact: contact,
+          ),
         ));
       },
     );
