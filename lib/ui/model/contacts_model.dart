@@ -12,10 +12,10 @@ class ContactsModel extends Model {
   bool get isLoading => _isLoading;
 
   Future loadContacts() async {
-    this._isLoading = true;
+    _isLoading = true;
     notifyListeners();
     _contacts = await _contactDao.getAllInSortedOrder();
-    this._isLoading = false;
+    _isLoading = false;
     notifyListeners();
   }
 
@@ -36,6 +36,6 @@ class ContactsModel extends Model {
 
   Future changeFavoriteStatus(Contact contact) async {
     contact.isFavorite = !contact.isFavorite;
-    return this.updateContact(contact);
+    return updateContact(contact);
   }
 }

@@ -38,6 +38,7 @@ class _ContactFormState extends State<ContactForm> {
     return Form(
       key: _formKey,
       child: ListView(
+        padding: EdgeInsets.all(8),
         children: <Widget>[
           const SizedBox(height: 10),
           _buildContactPicture(),

@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ContactTile extends StatelessWidget {
   final int contactIndex;
@@ -22,8 +23,9 @@ class ContactTile extends StatelessWidget {
     final Contact contact = model.contacts[contactIndex];
     return Slidable(
       endActionPane: ActionPane(
+        extentRatio: 0.3,
         // A motion is a widget used to control how the pane animates.
-        motion: const StretchMotion(),
+        motion: const BehindMotion(),
         // A pane can dismiss the Slidable.
         //dismissible: DismissiblePane(onDismissed: () {}),
         // All actions are defined in the children parameter.
@@ -40,8 +42,62 @@ class ContactTile extends StatelessWidget {
           ),
         ],
       ),
+      startActionPane: ActionPane(
+        // A motion is a widget used to control how the pane animates.
+        motion: const BehindMotion(),
+        // A pane can dismiss the Slidable.
+        //dismissible: DismissiblePane(onDismissed: () {}),
+        // All actions are defined in the children parameter.
+        children: [
+          // A SlidableAction can have an icon and/or a label.
+          SlidableAction(
+            onPressed: (bc) => this._callPhoneNumber(bc, contact.phoneNumber),
+            backgroundColor: Colors.green,
+            foregroundColor: Colors.white,
+            icon: Icons.phone,
+            label: 'Call',
+          ),
+          SlidableAction(
+            onPressed: (bc) => this._writeEmail(bc, contact.email),
+            backgroundColor: Colors.blue,
+            foregroundColor: Colors.white,
+            icon: Icons.mail,
+            label: 'Email',
+          ),
+        ],
+      ),
       child: _buildContent(contact, model, context),
     );
+  }
+
+  Future _callPhoneNumber(
+    BuildContext context,
+    String number,
+  ) async {
+    final uri = Uri.parse('tel:${number}');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      final snackbar = SnackBar(
+        content: Text('Cannot make a call'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackbar);
+    }
+  }
+
+  Future _writeEmail(
+    BuildContext context,
+    String mailTo,
+  ) async {
+    final uri = Uri.parse('mailto:${mailTo}');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      final snackbar = SnackBar(
+        content: Text('Cannot write an email'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackbar);
+    }
   }
 
   ListTile _buildContent(

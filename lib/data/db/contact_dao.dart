@@ -42,6 +42,7 @@ class ContactDao {
       await _db,
       finder: finder,
     );
+
     return snapshots.map((sn) {
       var c = Contact.fromMap(sn.value);
       c.id = sn.key;

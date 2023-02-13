@@ -16,6 +16,11 @@ class _ContactsListPageState extends State<ContactsListPage> {
       appBar: AppBar(title: Text('Contacts')),
       body: ScopedModelDescendant<ContactsModel>(
         builder: ((context, child, model) {
+          if (model.isLoading) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
           return ListView.builder(
             itemCount: model.contacts.length,
             itemBuilder: (context, index) {
